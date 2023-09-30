@@ -76,37 +76,47 @@ def read_and_search_csv(read_csv_file, write_csv_file,live_csv_file):
                                 find_index_detail = "P_CODE : " + p_code + "  is present in SKU CODE file (writting file)"
                                 logger.info(find_index_detail)
 
-                                if write_file_df[index_of_sku_code][19] == '' or write_file_df[index_of_sku_code][20] == '':
-                                    find_index_detail = "Find exact serial number for this P_CODE : " + p_code + "  where we have to change the value i.e "+ str(index_of_sku_code+1) + " Index number"
-                                    logger.info(find_index_detail)
-                                    write_file_df[index_of_sku_code][19] = net_sale_rate
-                                    write_file_df[index_of_sku_code][20] = mrp
-                                    write_file_df[index_of_sku_code].insert(17, '')
-                                    write_file_df[index_of_sku_code].insert(35, '')
-                                    write_file_df[index_of_sku_code].insert(36, '')
-                                    del write_file_df[index_of_sku_code][-4]
-                                    del write_file_df[index_of_sku_code][-5]
-                                    final_all_value_edited.append(write_file_df[index_of_sku_code])
-                                    value_you_editied = write_and_save_csv(index_of_sku_code,mrp,net_sale_rate)
-                                    # final_all_value_edited.append({p_code : br_vale})
-                                    if value_you_editied not in seriel_num_edited:
-                                        seriel_num_edited.append(value_you_editied)
-                                
-                                elif str(int(float(write_file_df[index_of_sku_code][19]))) not in  str(net_sale_rate) or str(int(float(write_file_df[index_of_sku_code][20]))) not in  str(mrp):
-                                    find_index_detail = "Find exact serial number for this P_CODE : " + p_code + "  where we have to change the value i.e "+ str(index_of_sku_code+1) + " Index number"
-                                    logger.info(find_index_detail)
-                                    write_file_df[index_of_sku_code][19] = net_sale_rate
-                                    write_file_df[index_of_sku_code][20] = mrp
-                                    write_file_df[index_of_sku_code].insert(17, '')
-                                    write_file_df[index_of_sku_code].insert(35, '')
-                                    write_file_df[index_of_sku_code].insert(36, '')
-                                    del write_file_df[index_of_sku_code][-4]
-                                    del write_file_df[index_of_sku_code][-5]
-                                    final_all_value_edited.append(write_file_df[index_of_sku_code])
-                                    value_you_editied = write_and_save_csv(index_of_sku_code,mrp,net_sale_rate)
-                                    # final_all_value_edited.append({p_code : br_vale})
-                                    if value_you_editied not in seriel_num_edited:
-                                        seriel_num_edited.append(value_you_editied)
+                                try:
+
+                                    if write_file_df[index_of_sku_code][19] == '' or write_file_df[index_of_sku_code][20] == '':
+                                        find_index_detail = "Find exact serial number for this P_CODE : " + p_code + "  where we have to change the value i.e "+ str(index_of_sku_code+1) + " Index number"
+                                        logger.info(find_index_detail)
+                                        write_file_df[index_of_sku_code][19] = net_sale_rate
+                                        write_file_df[index_of_sku_code][20] = mrp
+                                        write_file_df[index_of_sku_code].insert(17, '')
+                                        write_file_df[index_of_sku_code].insert(35, '')
+                                        write_file_df[index_of_sku_code].insert(36, '')
+                                        del write_file_df[index_of_sku_code][-4]
+                                        del write_file_df[index_of_sku_code][-5]
+                                        final_all_value_edited.append(write_file_df[index_of_sku_code])
+                                        value_you_editied = write_and_save_csv(index_of_sku_code,mrp,net_sale_rate)
+                                        # final_all_value_edited.append({p_code : br_vale})
+                                        if value_you_editied not in seriel_num_edited:
+                                            seriel_num_edited.append(value_you_editied)
+                                    
+                                    elif str(int(float(write_file_df[index_of_sku_code][19]))) not in  str(net_sale_rate) or str(int(float(write_file_df[index_of_sku_code][20]))) not in  str(mrp):
+                                        find_index_detail = "Find exact serial number for this P_CODE : " + p_code + "  where we have to change the value i.e "+ str(index_of_sku_code+1) + " Index number"
+                                        logger.info(find_index_detail)
+                                        write_file_df[index_of_sku_code][19] = net_sale_rate
+                                        write_file_df[index_of_sku_code][20] = mrp
+                                        write_file_df[index_of_sku_code].insert(17, '')
+                                        write_file_df[index_of_sku_code].insert(35, '')
+                                        write_file_df[index_of_sku_code].insert(36, '')
+                                        del write_file_df[index_of_sku_code][-4]
+                                        del write_file_df[index_of_sku_code][-5]
+                                        final_all_value_edited.append(write_file_df[index_of_sku_code])
+                                        value_you_editied = write_and_save_csv(index_of_sku_code,mrp,net_sale_rate)
+                                        # final_all_value_edited.append({p_code : br_vale})
+                                        if value_you_editied not in seriel_num_edited:
+                                            seriel_num_edited.append(value_you_editied)
+
+
+                                except ValueError:
+                                    except_detail =str(p_code) + " with value of BR_CODE " + br_vale + " has been repeated hence discard to change the value"
+                                    logger.info(except_detail)
+                                    pass
+                                except Exception as exe:
+                                    logger.info(exe)
 
     
     edited_value = "Value You had edited in Write csv file are : " +  seriel_num_edited.__str__()
@@ -179,8 +189,13 @@ def save_file_after_editing(final_all_value_edited):
 # write_csv_file = 'C://Users//hp//Pictures//Rohit_project_Automation//products_export_write.csv'  #put always write csv file
 # live_csv_file = 'C://Users//hp//Pictures//Rohit_project_Automation//Dark Store SKU.csv'  #put always live csv file
 
-read_csv_file = r'C:\Users\hp\Pictures\Rohit_project_Automation\web_product_search.csv'  #put always search csv file
-write_csv_file = r'C:\Users\hp\Pictures\Rohit_project_Automation\products_export_write.csv'  #put always write csv file
-live_csv_file = r'C:\Users\hp\Pictures\Rohit_project_Automation\Dark Store SKU.csv'  #put always live csv file
-print(read_and_search_csv(read_csv_file, write_csv_file,live_csv_file))
+# read_csv_file = r'C:\Users\hp\Pictures\Rohit_project_Automation\web_product_search.csv'  #put always search csv file
+# write_csv_file = r'C:\Users\hp\Pictures\Rohit_project_Automation\products_export_write.csv'  #put always write csv file
+# live_csv_file = r'C:\Users\hp\Pictures\Rohit_project_Automation\Dark Store SKU.csv'  #put always live csv file
 
+read_csv_file = 'read.csv'  #put always search csv file
+write_csv_file = 'write.csv'  #put always write csv file
+live_csv_file = 'Dark Store SKU.csv'  #put always live csv file
+
+print(read_and_search_csv(read_csv_file, write_csv_file,live_csv_file))
+# checking and writing for price
