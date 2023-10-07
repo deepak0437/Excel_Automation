@@ -22,9 +22,14 @@ def read_and_search_csv(read_csv_file, write_csv_file,live_csv_file):
     read_file_df = read_file_df.values.tolist()
 
     # reading write_csv_file and after converting into array
-    write_file_df = pd.read_csv(write_csv_file)
-    write_file_df = write_file_df.replace(np.nan,"")   #removing all spaces with a empty string value
+    write_file_df_1 = pd.read_csv(write_csv_file)
+    write_file_df = write_file_df_1.replace(np.nan,"")   #removing all spaces with a empty string value
     write_file_df = write_file_df.values.tolist()
+
+    header_row = write_file_df_1.columns.tolist()
+    check_status_index = False
+    if str(header_row.index('Status')) == "51":
+        check_status_index = True
 
     # iterating live_file_df and appending all P_CODE in p_code_from_live_file array
     for product in live_file_df:
@@ -120,7 +125,7 @@ def read_and_search_csv(read_csv_file, write_csv_file,live_csv_file):
 
     
     edited_value = "Value You had edited in Write csv file are : " +  seriel_num_edited.__str__()
-    save_file_after_editing(final_all_value_edited)
+    save_file_after_editing(final_all_value_edited,check_status_index)
     logger.info(edited_value)  
     logger.info(final_all_value_edited)    
 
@@ -175,14 +180,20 @@ def write_and_save_csv(final_index,mrp,net_sale_rate):
     return str(final_index+2)
 
 
-def save_file_after_editing(final_all_value_edited):
+def save_file_after_editing(final_all_value_edited,check_status_index):
     head1 = ["Handle", "Title", "Body (HTML)",	"Vendor" ,"Product Category", "Type", "Tags", "Published", "Option1 Name", "Option1 Value", "Option2 Name", "Option2 Value", "Option3 Name", "Option3 Value", "Variant SKU", "Variant Grams", "Variant Inventory Tracker", "Variant Inventory Qty", "Variant Inventory Policy", "Variant Fulfillment Service", "Variant Price", "Variant Compare At Price", "Variant Requires Shipping", "Variant Taxable", "Variant Barcode", "Image Src", "Image Position", "Image Alt Text", "Gift Card", "SEO Title", "SEO Description", "Google Shopping / Google Product Category", "Google Shopping / Gender", "Google Shopping / Age Group", "Google Shopping / MPN", "Google Shopping / AdWords Grouping", "Google Shopping / AdWords Labels", "Google Shopping / Condition", "Google Shopping / Custom Product", "Google Shopping / Custom Label 0", "Google Shopping / Custom Label 1", "Google Shopping / Custom Label 2", "Google Shopping / Custom Label 3", "Google Shopping / Custom Label 4", "Variant Image", "Variant Weight Unit", "Variant Tax Code", "Cost per item", "Price / International", "Compare At Price / International", "Status"]
     
     with open('save_final_file.csv', 'w', newline='',encoding='UTF-8') as file:
         writer = csv.writer(file)
         writer.writerow(head1)
-        for value in final_all_value_edited:
-            writer.writerow(value)
+        if check_status_index == True:
+            for value in final_all_value_edited:
+                del value[-2]
+                del value[-3]
+                writer.writerow(value)
+        else:
+            for value in final_all_value_edited:
+                writer.writerow(value)
 
 
 # read_csv_file = 'C://Users//hp//Pictures//Rohit_project_Automation//web_product_search.csv'  #put always search csv file
