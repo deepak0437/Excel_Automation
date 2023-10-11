@@ -38,6 +38,7 @@ def read_and_search_csv(read_csv_file, write_csv_file,live_csv_file):
     check_alredy_done = []
     final_all_value_edited = []
 
+    final_all_details_for_zero_qnty = []
     for item in live_file_df:
         
         start_details = "Start Working ................... " + str(item[0]) 
@@ -53,6 +54,7 @@ def read_and_search_csv(read_csv_file, write_csv_file,live_csv_file):
                 # if yes code_from_live present then finding all index of that code_from_live from p_code_from_read_file_df array
                 finding_all_index_of_p_code = [index for index,items in enumerate(p_code_from_read_file_df) if items == code_from_live]
 
+                store_all_details = []
                 for index_of_p_code in finding_all_index_of_p_code:   #now start checking index by index in read_file_df
                     code_from_read_file = str(read_file_df[index_of_p_code][1])
 
@@ -60,6 +62,7 @@ def read_and_search_csv(read_csv_file, write_csv_file,live_csv_file):
                     bal_qty = str(int(float(read_file_df[index_of_p_code][3])))
                     
                     all_details = {'P_CODE' : p_code, 'BR_CODE' : br_vale, 'BAL_QTY' : bal_qty}
+                    store_all_details.append(all_details)
                     logger.info(all_details)
                     
                     if code_from_read_file in sku_code:    #checking that code present in sku_code or not
@@ -89,6 +92,35 @@ def read_and_search_csv(read_csv_file, write_csv_file,live_csv_file):
                             else:
                                 pass
 
+                #checking which BR_CODE is not present in read file
+                # After that storing all values in a new list for further process
+                br_code_for_delete = ['RKDA', 'RKM', 'RKBS']
+                p_code_new = ''
+                for store in store_all_details:
+                    p_code_new = store['P_CODE']
+                    if store['BR_CODE'] in br_code_for_delete:
+                        br_code_for_delete.remove(store['BR_CODE'])
+
+                if len(br_code_for_delete) > 0:
+                    for codes in br_code_for_delete:
+                        new_all_details = {'P_CODE' : p_code_new, 'BR_CODE' : codes}
+                        final_all_details_for_zero_qnty.append(new_all_details)
+
+
+    # #doing operations (searching in write file and over writting quantity as 0)                 
+    for final_details in final_all_details_for_zero_qnty:
+        find_final_details_in_write_file = "Searching : " + final_details.__str__() + " in write file."
+        logger.info(find_final_details_in_write_file)
+        for row_items in write_file_df:
+            if final_details['P_CODE'] == row_items[8] and br_code[final_details['BR_CODE']] in row_items[1] and br_code_location[final_details['BR_CODE']] in row_items[11]:
+                find_index_detail = "We find this P_CODE : " + final_details['P_CODE'] + "  is not present in (reading file ...) So we are changing quantity to 0."
+                logger.info(find_index_detail)
+                row_items[15] = 0
+                row_items[16] = 0
+                final_all_value_edited.append(row_items)
+
+    
+    
     write_and_save_csv(write_file_df)
     save_file_after_editing(final_all_value_edited)
 
