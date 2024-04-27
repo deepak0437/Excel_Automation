@@ -75,10 +75,10 @@ def read_and_search_csv(read_csv_file, write_csv_file,live_csv_file):
                                 logger.info(find_index_detail)
                                 
                                 if str(write_file_df[index_of_sku_code][15]) == bal_qty and str(write_file_df[index_of_sku_code][16]) ==  bal_qty:
-                                    both_equal = "both are equal... write file pdf :  " + str(write_file_df[index_of_sku_code][15]) + " and " + write_file_df[index_of_sku_code][16] + " and read file file : " + bal_qty
+                                    both_equal = "both are equal... write file pdf :  " + str(write_file_df[index_of_sku_code][15]) + " and " + str(write_file_df[index_of_sku_code][16]) + " and read file file : " + bal_qty
                                     logger.info(both_equal)
                                 else:
-                                    not_equal = "both are not equal... write file pdf " + str(write_file_df[index_of_sku_code][15]) + " and " + write_file_df[index_of_sku_code][16]+ " and read file file : " + bal_qty
+                                    not_equal = "both are not equal... write file pdf " + str(write_file_df[index_of_sku_code][15]) + " and " + str(write_file_df[index_of_sku_code][16]) + " and read file file : " + bal_qty
                                     logger.info(not_equal)
 
                                     write_file_df[index_of_sku_code][15] = bal_qty
